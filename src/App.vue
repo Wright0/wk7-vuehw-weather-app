@@ -1,46 +1,54 @@
 <template>
   <div id="app">
     <h1>Edinburgh Weather</h1>
-    <!-- <select-day :upcomingWeather='upcomingEDIWeather'/> -->
-    <!-- <display-weather :currentWeather='currentEDIWeather' :weatherForecast='selectedWeatherObject'/> -->
+    <display-current-weather :currentWeather='currentWeather'/>
+    <select-day :fiveDayForecast='fiveDayForecast'/>
+    <display-forecast :selectedDayArray='selectedDayArray'/>
   </div>
 </template>
 
 <script>
 import { eventBus } from './main.js'
 import SelectDay from './components/SelectDay.vue'
-import DisplayWeather from './components/DisplayWeather.vue'
+import DisplayForecast from './components/DisplayForecast.vue'
+import DisplayCurrentWeather from './components/DisplayCurrentWeather.vue'
 
 export default {
   name: 'app',
   data(){
     return {
-      currentEDIWeather: {},
-      // upcomingEDIWeather: [],
-      selectedWeatherObject: null,
-      fiveDaysAhead: {}
+      currentWeather: null,
+      fiveDayForecast: {},
+      selectedDayArray: null,
     }
   },
   components: {
     "select-day": SelectDay,
-    "display-weather": DisplayWeather
+    "display-forecast": DisplayForecast,
+    "display-current-weather": DisplayCurrentWeather
   },
   mounted(){
     fetch('https://api.openweathermap.org/data/2.5/weather?id=3333229&units=metric&APPID=845746c8172a51a966b8c21712af5d3f')
     .then(response => response.json())
-    .then(currentEDIWeatherDetails => this.currentEDIWeather = currentEDIWeatherDetails)
+    .then(currentWeatherDetails => this.currentWeather = currentWeatherDetails)
 
     fetch('https://api.openweathermap.org/data/2.5/forecast?id=3333229&units=metric&APPID=845746c8172a51a966b8c21712af5d3f')
     .then(response => response.json())
-
     .then(nextFiveDaysObject => {
-      nextFiveDaysObject.list.map(weatherObject => {
-        this.fiveDaysAhead[weatherObject.dt_txt] = weatherObject
-      })
+      //Get the unique dates.
+      let allDates = nextFiveDaysObject.list.map(weatherObject => weatherObject.dt_txt.substring(0, 10));
+      const uniqueDates = new Set(allDates);
+
+      //Build the data structure. Combine all objects from the same day together in one array set to a key of that date.
+      uniqueDates.forEach(date => {
+        this.fiveDayForecast[date] = nextFiveDaysObject.list.filter(weatherObject => {
+          return weatherObject.dt_txt.substring(0,10) === date
+        })
+      });
     })
 
-    eventBus.$on('send-dt-selected', dateTimeCode => {
-      this.selectedWeatherObject = this.upcomingEDIWeather.find(weatherObject => weatherObject.dt === dateTimeCode)
+    eventBus.$on('send-selected-date-info', selectedDayWeatherArray => {
+      selectedDayArray = selectedDayWeatherArray
     })
   }
 }
@@ -48,7 +56,7 @@ export default {
 
 <style>
 body {
-  background-color: #2F2235;
+  background-color: #253237;
 }
 
 #app {
@@ -56,7 +64,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #BFC3BA;
+  color: #E0FBFC;
   margin-top: 60px;
 }
 </style>

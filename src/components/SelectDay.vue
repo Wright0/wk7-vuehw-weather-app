@@ -1,14 +1,9 @@
 <template lang="html">
   <div>
-    <select v-model="dtOfdateSelected" @change='selectDate'>
-      <option v-for='weatherObjects in upcomingWeather' :value='weatherObjects.dt'>{{weatherObjects.dt_txt}}</option>
+    <h4>Five day forecast:</h4>
+    <select v-model="selectedDate" @change='selectDate'>
+      <option v-for='(weatherArray, date) in fiveDayForecast'>{{date}}</option>
     </select>
-
-  <!-- <ul>
-    <li v-for >{{weatherObjects.dt_txt}}</li>
-
-  </ul> -->
-
   </div>
 </template>
 
@@ -22,18 +17,21 @@ export default {
   name: "select-day",
   data(){
     return {
-      dtOfdateSelected: '',
-      fiveNextDays: []
+      selectedDate: []
     }
   },
-  props: ['upcomingWeather'],
+  props: ['fiveDayForecast'],
   methods: {
     selectDate(){
-      eventBus.$emit('send-dt-selected', this.dtOfdateSelected);
+      eventBus.$emit('send-selected-date-info', this.selectedDate);
     }
   }
 }
 </script>
 
 <style lang="css" scoped>
+
+select {
+  background-color: #E0FBFC;
+}
 </style>
