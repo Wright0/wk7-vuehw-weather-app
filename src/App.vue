@@ -1,8 +1,8 @@
 <template>
   <div id="app">
     <h1>Edinburgh Weather</h1>
-    <select-day :upcomingWeather='upcomingEDIWeather'/>
-    <display-weather :currentWeather='currentEDIWeather' :weatherForecast='selectedWeatherObject'/>
+    <!-- <select-day :upcomingWeather='upcomingEDIWeather'/> -->
+    <!-- <display-weather :currentWeather='currentEDIWeather' :weatherForecast='selectedWeatherObject'/> -->
   </div>
 </template>
 
@@ -16,8 +16,9 @@ export default {
   data(){
     return {
       currentEDIWeather: {},
-      upcomingEDIWeather: [],
-      selectedWeatherObject: null
+      // upcomingEDIWeather: [],
+      selectedWeatherObject: null,
+      fiveDaysAhead: {}
     }
   },
   components: {
@@ -31,29 +32,17 @@ export default {
 
     fetch('https://api.openweathermap.org/data/2.5/forecast?id=3333229&units=metric&APPID=845746c8172a51a966b8c21712af5d3f')
     .then(response => response.json())
-    .then(upcomingEDIWeatherObject => this.upcomingEDIWeather = upcomingEDIWeatherObject.list)
+
+    .then(nextFiveDaysObject => {
+      nextFiveDaysObject.list.map(weatherObject => {
+        this.fiveDaysAhead[weatherObject.dt_txt] = weatherObject
+      })
+    })
 
     eventBus.$on('send-dt-selected', dateTimeCode => {
       this.selectedWeatherObject = this.upcomingEDIWeather.find(weatherObject => weatherObject.dt === dateTimeCode)
     })
-
-    console.log(combineFiveDaysData());
-  },
-  methods: {
-    combineFiveDaysData(){
-        const numberTest = [1, 2, 3, 4, 5]
-        let fiveDays = {};
-
-        numberTest.map(number => {
-          fiveDays[number] = 'test123';
-        })
-
-        return fiveDays
-      }
-
-
   }
-
 }
 </script>
 
@@ -61,6 +50,7 @@ export default {
 body {
   background-color: #2F2235;
 }
+
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
