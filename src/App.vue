@@ -2,7 +2,7 @@
   <div id="app">
     <h1>Edinburgh Weather</h1>
     <select-day :upcomingWeather='upcomingEDIWeather'/>
-    <display-weather :weatherForecast='selectedWeatherObject'/>
+    <display-weather :todaysWeather='currentEDIWeather' :weatherForecast='selectedWeatherObject'/>
   </div>
 </template>
 
@@ -15,9 +15,9 @@ export default {
   name: 'app',
   data(){
     return {
-      // currentEDIWeather: {},
+      currentEDIWeather: {},
       upcomingEDIWeather: [],
-      selectedWeatherObject: {}
+      selectedWeatherObject: null
     }
   },
   components: {
@@ -25,9 +25,9 @@ export default {
     "display-weather": DisplayWeather
   },
   mounted(){
-    // fetch('https://api.openweathermap.org/data/2.5/weather?id=3333229&units=metric&APPID=845746c8172a51a966b8c21712af5d3f')
-    // .then(response => response.json())
-    // .then(currentEDIWeatherDetails => this.currentEDIWeather = currentEDIWeatherDetails)
+    fetch('https://api.openweathermap.org/data/2.5/weather?id=3333229&units=metric&APPID=845746c8172a51a966b8c21712af5d3f')
+    .then(response => response.json())
+    .then(currentEDIWeatherDetails => this.currentEDIWeather = currentEDIWeatherDetails)
 
     fetch('https://api.openweathermap.org/data/2.5/forecast?id=3333229&units=metric&APPID=845746c8172a51a966b8c21712af5d3f')
     .then(response => response.json())
