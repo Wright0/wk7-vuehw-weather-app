@@ -3,6 +3,12 @@
     <select v-model="dtOfdateSelected" @change='selectDate'>
       <option v-for='weatherObjects in upcomingWeather' :value='weatherObjects.dt'>{{weatherObjects.dt_txt}}</option>
     </select>
+
+  <!-- <ul>
+    <li v-for >{{weatherObjects.dt_txt}}</li>
+
+  </ul> -->
+
   </div>
 </template>
 
@@ -16,7 +22,8 @@ export default {
   name: "select-day",
   data(){
     return {
-      dtOfdateSelected: ''
+      dtOfdateSelected: '',
+      fiveNextDays: []
     }
   },
   props: ['upcomingWeather'],

@@ -2,7 +2,7 @@
   <div id="app">
     <h1>Edinburgh Weather</h1>
     <select-day :upcomingWeather='upcomingEDIWeather'/>
-    <display-weather :todaysWeather='currentEDIWeather' :weatherForecast='selectedWeatherObject'/>
+    <display-weather :currentWeather='currentEDIWeather' :weatherForecast='selectedWeatherObject'/>
   </div>
 </template>
 
@@ -36,18 +36,37 @@ export default {
     eventBus.$on('send-dt-selected', dateTimeCode => {
       this.selectedWeatherObject = this.upcomingEDIWeather.find(weatherObject => weatherObject.dt === dateTimeCode)
     })
+
+    console.log(combineFiveDaysData());
+  },
+  methods: {
+    combineFiveDaysData(){
+        const numberTest = [1, 2, 3, 4, 5]
+        let fiveDays = {};
+
+        numberTest.map(number => {
+          fiveDays[number] = 'test123';
+        })
+
+        return fiveDays
+      }
+
+
   }
 
 }
 </script>
 
 <style>
+body {
+  background-color: #2F2235;
+}
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
+  color: #BFC3BA;
   margin-top: 60px;
 }
 </style>
