@@ -2,7 +2,7 @@
   <div id="app">
     <h1>Edinburgh Weather</h1>
     <display-current-weather :currentWeather='currentWeather'/>
-    <select-day :fiveDayForecast='fiveDayForecast'/>
+    <select-day v-if="Object.keys(fiveDayForecast).length" :fiveDayForecast='fiveDayForecast'/>
     <display-forecast :selectedDayArray='selectedDayArray'/>
   </div>
 </template>
@@ -37,14 +37,27 @@ export default {
     .then(nextFiveDaysObject => {
       //Get the unique dates.
       let allDates = nextFiveDaysObject.list.map(weatherObject => weatherObject.dt_txt.substring(0, 10));
+
       const uniqueDates = new Set(allDates);
 
       //Build the data structure. Combine all objects from the same day together in one array set to a key of that date.
+
       uniqueDates.forEach(date => {
-        this.fiveDayForecast[date] = nextFiveDaysObject.list.filter(weatherObject => {
-          return weatherObject.dt_txt.substring(0,10) === date
-        })
+        this.fiveDayForecast = {
+          [date]: nextFiveDaysObject.list.filter(weatherObject => {
+            return weatherObject.dt_txt.substring(0,10) === date
+          }),
+          ...this.fiveDayForecast
+        }
       });
+
+      // const protoFiveDayForecast = {}
+      // uniqueDates.forEach(date => {
+      //   protoFiveDayForecast[date] = nextFiveDaysObject.list.filter(weatherObject => {
+      //       return weatherObject.dt_txt.substring(0,10) === date
+      //   })
+      // });
+      // this.fiveDayForecast = protoFiveDayForecast;
     })
 
     eventBus.$on('send-selected-date-info', selectedDayWeatherArray => {

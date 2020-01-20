@@ -2,7 +2,7 @@
   <div>
     <h4>Five day forecast:</h4>
     <select v-model="selectedDate" @change='selectDate'>
-      <option v-for='(weatherArray, date) in fiveDayForecast'>{{date}}</option>
+      <option v-for='(weatherArray, date) in fiveDayForecast' :value="weatherArray">{{date}}</option>
     </select>
   </div>
 </template>
